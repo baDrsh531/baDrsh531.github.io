@@ -1,4 +1,5 @@
 import ProjectCard from "./ProjectCard.jsx";
+import { lighthouseProject } from "./lighthouseProject.js";
 
 /**
  * Coque du portfolio : en-tête (identité + liens) puis la liste des projets.
@@ -37,6 +38,7 @@ export default function App() {
 
       <main className="site-projects">
         <ProjectCard />
+        <ProjectCard data={lighthouseProject} />
         {/* Prochaines cartes de projet ici — une par projet. */}
       </main>
 
