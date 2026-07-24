@@ -25,8 +25,9 @@ const OWNER = {
     "De l'orchestration multi-agents au déploiement de LLM en local (OpenAI-compatible via vLLM / llama.cpp), j'assemble le backend Python — API, persistance, tests — qui rend l'IA fiable en production.",
   links: {
     github: "https://github.com/baDrsh531",
-    linkedin: "", // ← ajoute l'URL de ton profil LinkedIn
-    email: "",    // ← ajoute ton email pro (ex: "prenom.nom@domaine.com")
+    linkedin: "https://www.linkedin.com/in/badr-sahraoui-2b90a6239",
+    email: "sahraoui.badr9@gmail.com",
+    phone: "0700581336",
   },
 };
 
@@ -62,6 +63,13 @@ function MailIcon() {
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="M3.5 6.5 12 12.5l8.5-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function PhoneIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M6.5 3h3l1.5 4-2 1.5a12 12 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3z" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -125,6 +133,9 @@ export default function App() {
             )}
             {links.email && (
               <a href={`mailto:${links.email}`} aria-label="Email"><MailIcon /> Email</a>
+            )}
+            {links.phone && (
+              <a href={`tel:${links.phone}`} aria-label="Téléphone"><PhoneIcon /> Téléphone</a>
             )}
           </nav>
         </section>
@@ -208,6 +219,11 @@ export default function App() {
             {links.email && (
               <a className="contact-card" href={`mailto:${links.email}`}>
                 <MailIcon /> <span>Email</span><span className="contact-meta">{links.email}</span>
+              </a>
+            )}
+            {links.phone && (
+              <a className="contact-card" href={`tel:${links.phone}`}>
+                <PhoneIcon /> <span>Téléphone</span><span className="contact-meta">{links.phone}</span>
               </a>
             )}
           </div>
