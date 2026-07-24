@@ -2,7 +2,7 @@ import ProjectCard from "./ProjectCard.jsx";
 import { lighthouseProject } from "./lighthouseProject.js";
 
 /**
- * Coque du portfolio : nav + hero + projets + compétences + à propos + contact.
+ * Coque du portfolio : nav + hero + projets IA + compétences + à propos + contact.
  *
  * ┌─ POUR AJOUTER UN PROJET ─────────────────────────────────────────────────┐
  * │  ProjectCard accepte une prop `data`. Crée un objet projet (voir          │
@@ -12,34 +12,34 @@ import { lighthouseProject } from "./lighthouseProject.js";
  */
 
 // ─── IDENTITÉ & LIENS ───────────────────────────────────────────────────────
-// Remplis linkedin / email / cv quand tu as les valeurs : les boutons
-// correspondants apparaissent automatiquement (rien de cassé s'ils sont vides).
+// Remplis linkedin / email quand tu as les valeurs : les liens apparaissent
+// automatiquement (rien de cassé s'ils sont vides).
 const OWNER = {
   name: "Badr Sahraoui",
   role: "AI Software Engineer",
-  // Positionnement lu en < 5 s. Une phrase, orientée « ce que je construis ».
-  headline: "Je conçois et déploie des applications pilotées par des LLM — du modèle jusqu'au produit.",
+  // Positionnement lu en < 5 s, orienté valeur (pas de jargon creux).
+  headline: "Je construis des applications IA qui résolvent de vrais problèmes métier.",
   keywords: ["Python", "Django", "LLMs", "AI Agents", "Backend"],
+  // Sous-titre orienté impact : ce que je construis + comment.
   intro:
-    "J'assemble des systèmes où l'IA fait un vrai travail : orchestration de plusieurs agents, modèles servis en local (OpenAI-compatible via vLLM / llama.cpp) et l'ingénierie backend Python qui les rend fiables — API, persistance, tests.",
+    "De l'orchestration multi-agents au déploiement de LLM en local (OpenAI-compatible via vLLM / llama.cpp), j'assemble le backend Python — API, persistance, tests — qui rend l'IA fiable en production.",
   links: {
     github: "https://github.com/baDrsh531",
     linkedin: "", // ← ajoute l'URL de ton profil LinkedIn
     email: "",    // ← ajoute ton email pro (ex: "prenom.nom@domaine.com")
-    cv: "/cv-badr-sahraoui.pdf", // ← dépose ce PDF dans public/ pour activer le bouton
   },
 };
 
 // ─── COMPÉTENCES (catégorisées) ─────────────────────────────────────────────
-// Regroupées par domaine plutôt qu'en liste à plat. À jour de ce que couvrent
-// réellement les projets + le socle Python/IA.
+// Taxonomie orientée AI Engineer : l'IA en premier. Chaque techno est soit
+// utilisée dans les projets ci-dessous, soit une compétence maîtrisée du socle.
 const SKILLS = [
-  { group: "IA & LLM", items: ["LLM Engineering", "AI Agents", "Transformers", "Hugging Face", "vLLM · llama.cpp", "Ollama", "RAG & tool-calling", "Déploiement local de LLM"] },
-  { group: "Backend", items: ["Python", "Django", "FastAPI", "Flask", "REST API", "Socket.IO · SSE", "JWT"] },
-  { group: "Frontend", items: ["React", "Vite", "JavaScript", "HTML · CSS"] },
-  { group: "Data & Bases de données", items: ["SQL", "SQLite", "Pandas", "NumPy"] },
-  { group: "Cloud & Déploiement", items: ["Git · GitHub", "GitHub Actions (CI/CD)", "GitHub Pages", "Serveurs LLM OpenAI-compatible"] },
-  { group: "Outils & Qualité", items: ["pytest", "VS Code Extension API", "Gemini API"] },
+  { group: "Artificial Intelligence", items: ["LLMs", "AI Agents", "Prompt Engineering", "RAG & tool-calling", "Transformers", "Hugging Face", "Ollama", "vLLM · llama.cpp", "Déploiement local de LLM"] },
+  { group: "Backend", items: ["Python", "Django", "FastAPI", "Flask", "REST API", "JWT", "Socket.IO · SSE"] },
+  { group: "Databases", items: ["PostgreSQL", "MySQL", "SQLite"] },
+  { group: "Data", items: ["Pandas", "NumPy"] },
+  { group: "DevOps", items: ["Docker", "Git · GitHub", "Linux", "GitHub Actions (CI/CD)"] },
+  { group: "Frontend", items: ["React", "JavaScript", "HTML · CSS", "Vite"] },
 ];
 
 // ─── ICÔNES (SVG inline, aucune dépendance) ─────────────────────────────────
@@ -62,14 +62,6 @@ function MailIcon() {
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="M3.5 6.5 12 12.5l8.5-6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function DocIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" strokeLinejoin="round" />
-      <path d="M14 3v5h5M12 12v5M9.5 14.5 12 17l2.5-2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -123,11 +115,7 @@ export default function App() {
             <a className="btn btn-primary" href="#projets">
               Voir les projets <ArrowIcon />
             </a>
-            {links.cv && (
-              <a className="btn btn-ghost" href={links.cv} download>
-                <DocIcon /> Télécharger le CV
-              </a>
-            )}
+            <a className="btn btn-ghost" href="#contact">Me contacter</a>
           </div>
 
           <nav className="hero-social" aria-label="Réseaux">
@@ -141,12 +129,15 @@ export default function App() {
           </nav>
         </section>
 
-        {/* ── PROJETS ── */}
+        {/* ── PROJETS IA ── */}
         <section className="section" id="projets" aria-labelledby="projets-h">
           <div className="section-head">
-            <p className="section-kicker">01 — Sélection</p>
-            <h2 className="section-title" id="projets-h">Projets</h2>
-            <p className="section-sub">Deux systèmes complets, du backend au LLM — chiffres mesurés, code public.</p>
+            <p className="section-kicker">01 — Projets IA</p>
+            <h2 className="section-title" id="projets-h">Ce que je construis</h2>
+            <p className="section-sub">
+              Ma spécialité : des applications où le LLM fait le travail. Deux systèmes
+              complets, du backend au modèle — chiffres mesurés, code public.
+            </p>
           </div>
           <div className="projects">
             <ProjectCard />
@@ -159,7 +150,7 @@ export default function App() {
           <div className="section-head">
             <p className="section-kicker">02 — Stack</p>
             <h2 className="section-title" id="competences-h">Compétences</h2>
-            <p className="section-sub">Organisées par domaine, de l'IA au déploiement.</p>
+            <p className="section-sub">De l'IA au déploiement — l'intelligence artificielle en premier.</p>
           </div>
           <div className="skills">
             {SKILLS.map((cat) => (
@@ -184,19 +175,16 @@ export default function App() {
           <div className="about">
             <p>
               Je construis des applications où l'IA fait un vrai travail, pas de la démo.
-              Mon terrain : brancher des LLM sur des problèmes concrets — orchestrer
-              plusieurs agents spécialisés, servir des modèles en local
-              (OpenAI-compatible via vLLM / llama.cpp) et écrire le backend Python qui
-              tient l'ensemble : API REST, persistance, suites de tests.
+              Concrètement : brancher des LLM sur des problèmes métier, orchestrer
+              plusieurs agents spécialisés, et servir des modèles en local
+              (OpenAI-compatible via vLLM / llama.cpp).
             </p>
             <p>
-              Je travaille de bout en bout, du pipeline de données jusqu'à l'interface,
-              avec des garde-fous — validation git de chaque changement, tests
-              automatisés — parce qu'un système d'IA n'a de valeur que si on peut lui
-              faire confiance. Les deux projets ci-dessus l'illustrent : un orchestrateur
-              multi-agents qui délègue le code à des modèles locaux et le fait relire
-              avant d'écrire, et un moteur d'analyse qui transforme des statistiques
-              brutes en rapport lisible via un LLM.
+              Le reste, c'est de l'ingénierie backend Python qui tient la charge : API
+              REST, persistance, authentification, suites de tests. Je travaille de bout
+              en bout — du pipeline de données à l'interface — avec des garde-fous
+              (validation git de chaque changement, tests automatisés), parce qu'un
+              système d'IA ne vaut que si on peut lui faire confiance.
             </p>
           </div>
         </section>
@@ -220,11 +208,6 @@ export default function App() {
             {links.email && (
               <a className="contact-card" href={`mailto:${links.email}`}>
                 <MailIcon /> <span>Email</span><span className="contact-meta">{links.email}</span>
-              </a>
-            )}
-            {links.cv && (
-              <a className="contact-card" href={links.cv} download>
-                <DocIcon /> <span>CV</span><span className="contact-meta">PDF</span>
               </a>
             )}
           </div>
