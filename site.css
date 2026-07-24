@@ -9,7 +9,7 @@
   --site-panel: #ffffff;
   --site-text: #14161b;
   --site-dim: #566173;
-  --site-faint: #8994a3;
+  --site-faint: #616a78;          /* AA : ~5:1 sur fonds clairs (was #8994a3) */
   --site-accent: #4338ca;         /* indigo texte (contraste élevé sur clair) */
   --site-accent-soft: #eef0fb;    /* fond de puce/accent discret */
   --site-btn: #4338ca;            /* bouton plein */
@@ -29,7 +29,7 @@
     --site-panel: #0f1116;
     --site-text: #e9ebef;
     --site-dim: #a3abb8;
-    --site-faint: #6f7886;
+    --site-faint: #8b95a4;          /* AA : ~5,7:1 sur fonds sombres (was #6f7886) */
     --site-accent: #a5b4fc;
     --site-accent-soft: #191c27;
     --site-btn: #6366f1;
@@ -277,6 +277,13 @@ body {
 
 /* ── Projets ── */
 .projects { display: flex; flex-direction: column; gap: 40px; }
+/* Surcharge de la couleur « faint » DANS les cartes (détails métriques, statut
+   démo) pour atteindre le contraste AA — sans modifier ProjectCard.jsx.
+   Sélecteur plus spécifique (.projects .pc) que le composant (.pc) → l'emporte. */
+.projects .pc { --pc-faint: #616a78; }
+@media (prefers-color-scheme: dark) {
+  .projects .pc { --pc-faint: #8b95a4; }
+}
 
 /* ── Compétences ── */
 .skills {
