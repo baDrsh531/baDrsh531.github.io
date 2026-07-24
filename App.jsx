@@ -1,28 +1,19 @@
+import { useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard.jsx";
+import { matchiqProject } from "./matchiqProject.js";
 import { lighthouseProject } from "./lighthouseProject.js";
+import { STRINGS, SKILLS } from "./i18n.js";
 
 /**
- * Coque du portfolio : nav + hero + projets IA + compétences + à propos + contact.
- *
- * ┌─ POUR AJOUTER UN PROJET ─────────────────────────────────────────────────┐
- * │  ProjectCard accepte une prop `data`. Crée un objet projet (voir          │
- * │  lighthouseProject.js) et rends <ProjectCard data={monProjet} /> dans la  │
- * │  section #projets. Ne modifie pas le composant lui-même.                  │
- * └───────────────────────────────────────────────────────────────────────────┘
+ * Coque du portfolio, bilingue (FR / EN).
+ * Le texte vient de i18n.js ; les projets de matchiqProject.js et
+ * lighthouseProject.js (bilingues). ProjectCard.jsx n'est jamais modifié :
+ * on lui passe les données via la prop `data`.
  */
 
-// ─── IDENTITÉ & LIENS ───────────────────────────────────────────────────────
-// Remplis linkedin / email quand tu as les valeurs : les liens apparaissent
-// automatiquement (rien de cassé s'ils sont vides).
+// ─── IDENTITÉ & LIENS (indépendants de la langue) ───────────────────────────
 const OWNER = {
   name: "Badr Sahraoui",
-  role: "AI Software Engineer",
-  // Positionnement lu en < 5 s, orienté valeur (pas de jargon creux).
-  headline: "Je construis des applications IA qui résolvent de vrais problèmes métier.",
-  keywords: ["Python", "Django", "LLMs", "AI Agents", "Backend"],
-  // Sous-titre orienté impact : ce que je construis + comment.
-  intro:
-    "De l'orchestration multi-agents au déploiement de LLM en local (OpenAI-compatible via vLLM / llama.cpp), j'assemble le backend Python — API, persistance, tests — qui rend l'IA fiable en production.",
   links: {
     github: "https://github.com/baDrsh531",
     linkedin: "https://www.linkedin.com/in/badr-sahraoui-2b90a6239",
@@ -31,17 +22,18 @@ const OWNER = {
   },
 };
 
-// ─── COMPÉTENCES (catégorisées) ─────────────────────────────────────────────
-// Taxonomie orientée AI Engineer : l'IA en premier. Chaque techno est soit
-// utilisée dans les projets ci-dessous, soit une compétence maîtrisée du socle.
-const SKILLS = [
-  { group: "Artificial Intelligence", items: ["LLMs", "AI Agents", "Prompt Engineering", "RAG & tool-calling", "Transformers", "Hugging Face", "Ollama", "vLLM · llama.cpp", "Déploiement local de LLM"] },
-  { group: "Backend", items: ["Python", "Django", "FastAPI", "Flask", "REST API", "JWT", "Socket.IO · SSE"] },
-  { group: "Databases", items: ["PostgreSQL", "MySQL", "SQLite"] },
-  { group: "Data", items: ["Pandas", "NumPy"] },
-  { group: "DevOps", items: ["Docker", "Git · GitHub", "Linux", "GitHub Actions (CI/CD)"] },
-  { group: "Frontend", items: ["React", "JavaScript", "HTML · CSS", "Vite"] },
-];
+// Langue initiale : préférence sauvegardée, sinon langue du navigateur, sinon FR.
+function getInitialLang() {
+  try {
+    const saved = localStorage.getItem("lang");
+    if (saved === "fr" || saved === "en") return saved;
+  } catch (_) { /* localStorage indisponible */ }
+  if (typeof navigator !== "undefined" && navigator.language &&
+      navigator.language.toLowerCase().startsWith("en")) {
+    return "en";
+  }
+  return "fr";
+}
 
 // ─── ICÔNES (SVG inline, aucune dépendance) ─────────────────────────────────
 function GitHubIcon() {
@@ -83,88 +75,95 @@ function ArrowIcon() {
 
 // ─── APP ────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [lang, setLang] = useState(getInitialLang);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    try { localStorage.setItem("lang", lang); } catch (_) { /* ignore */ }
+    document.title = STRINGS[lang].metaTitle;
+  }, [lang]);
+
+  const t = STRINGS[lang];
+  const skills = SKILLS[lang];
   const { links } = OWNER;
   const year = new Date().getFullYear();
 
   return (
     <>
-      <a className="skip-link" href="#projets">Aller au contenu</a>
+      <a className="skip-link" href="#projets">{lang === "fr" ? "Aller au contenu" : "Skip to content"}</a>
 
       <header className="nav">
         <div className="nav-inner">
           <a className="nav-brand" href="#top">
             {OWNER.name}<span className="nav-brand-dot">.</span>
           </a>
-          <nav className="nav-links" aria-label="Navigation principale">
-            <a href="#projets">Projets</a>
-            <a href="#competences">Compétences</a>
-            <a href="#apropos">À propos</a>
-            <a href="#contact">Contact</a>
-          </nav>
+          <div className="nav-right">
+            <nav className="nav-links" aria-label={lang === "fr" ? "Navigation principale" : "Main navigation"}>
+              <a href="#projets">{t.nav.projects}</a>
+              <a href="#competences">{t.nav.skills}</a>
+              <a href="#apropos">{t.nav.about}</a>
+              <a href="#contact">{t.nav.contact}</a>
+            </nav>
+            <div className="lang-switch" role="group" aria-label={lang === "fr" ? "Choix de la langue" : "Language"}>
+              <button type="button" className={lang === "fr" ? "active" : ""} aria-pressed={lang === "fr"} onClick={() => setLang("fr")}>FR</button>
+              <button type="button" className={lang === "en" ? "active" : ""} aria-pressed={lang === "en"} onClick={() => setLang("en")}>EN</button>
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="site" id="top">
         {/* ── HERO ── */}
         <section className="hero" aria-labelledby="hero-title">
-          <p className="hero-role">{OWNER.role}</p>
-          <h1 className="hero-title" id="hero-title">{OWNER.headline}</h1>
+          <p className="hero-role">{t.hero.role}</p>
+          <h1 className="hero-title" id="hero-title">{t.hero.headline}</h1>
           <p className="hero-keywords">
-            {OWNER.keywords.map((k, i) => (
+            {t.hero.keywords.map((k, i) => (
               <span key={k}>
                 {i > 0 && <span className="dot" aria-hidden="true"> • </span>}
                 {k}
               </span>
             ))}
           </p>
-          <p className="hero-intro">{OWNER.intro}</p>
+          <p className="hero-intro">{t.hero.intro}</p>
 
           <div className="hero-cta">
             <a className="btn btn-primary" href="#projets">
-              Voir les projets <ArrowIcon />
+              {t.hero.ctaProjects} <ArrowIcon />
             </a>
-            <a className="btn btn-ghost" href="#contact">Me contacter</a>
+            <a className="btn btn-ghost" href="#contact">{t.hero.ctaContact}</a>
           </div>
 
-          <nav className="hero-social" aria-label="Réseaux">
+          <nav className="hero-social" aria-label={lang === "fr" ? "Réseaux" : "Social"}>
             <a href={links.github} target="_blank" rel="noreferrer" aria-label="GitHub"><GitHubIcon /> GitHub</a>
-            {links.linkedin && (
-              <a href={links.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /> LinkedIn</a>
-            )}
-            {links.email && (
-              <a href={`mailto:${links.email}`} aria-label="Email"><MailIcon /> Email</a>
-            )}
-            {links.phone && (
-              <a href={`tel:${links.phone}`} aria-label="Téléphone"><PhoneIcon /> Téléphone</a>
-            )}
+            <a href={links.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /> LinkedIn</a>
+            <a href={`mailto:${links.email}`} aria-label="Email"><MailIcon /> Email</a>
+            <a href={`tel:${links.phone}`} aria-label={t.contact.phoneLabel}><PhoneIcon /> {t.contact.phoneLabel}</a>
           </nav>
         </section>
 
         {/* ── PROJETS IA ── */}
         <section className="section" id="projets" aria-labelledby="projets-h">
           <div className="section-head">
-            <p className="section-kicker">01 — Projets IA</p>
-            <h2 className="section-title" id="projets-h">Ce que je construis</h2>
-            <p className="section-sub">
-              Ma spécialité : des applications où le LLM fait le travail. Deux systèmes
-              complets, du backend au modèle — chiffres mesurés, code public.
-            </p>
+            <p className="section-kicker">{t.projects.kicker}</p>
+            <h2 className="section-title" id="projets-h">{t.projects.title}</h2>
+            <p className="section-sub">{t.projects.sub}</p>
           </div>
           <div className="projects">
-            <ProjectCard />
-            <ProjectCard data={lighthouseProject} />
+            <ProjectCard data={matchiqProject[lang]} />
+            <ProjectCard data={lighthouseProject[lang]} />
           </div>
         </section>
 
         {/* ── COMPÉTENCES ── */}
         <section className="section" id="competences" aria-labelledby="competences-h">
           <div className="section-head">
-            <p className="section-kicker">02 — Stack</p>
-            <h2 className="section-title" id="competences-h">Compétences</h2>
-            <p className="section-sub">De l'IA au déploiement — l'intelligence artificielle en premier.</p>
+            <p className="section-kicker">{t.skills.kicker}</p>
+            <h2 className="section-title" id="competences-h">{t.skills.title}</h2>
+            <p className="section-sub">{t.skills.sub}</p>
           </div>
           <div className="skills">
-            {SKILLS.map((cat) => (
+            {skills.map((cat) => (
               <div className="skill-card" key={cat.group}>
                 <h3 className="skill-group">{cat.group}</h3>
                 <ul className="skill-list">
@@ -180,58 +179,42 @@ export default function App() {
         {/* ── À PROPOS ── */}
         <section className="section" id="apropos" aria-labelledby="apropos-h">
           <div className="section-head">
-            <p className="section-kicker">03 — Profil</p>
-            <h2 className="section-title" id="apropos-h">À propos</h2>
+            <p className="section-kicker">{t.about.kicker}</p>
+            <h2 className="section-title" id="apropos-h">{t.about.title}</h2>
           </div>
           <div className="about">
-            <p>
-              Je construis des applications où l'IA fait un vrai travail, pas de la démo.
-              Concrètement : brancher des LLM sur des problèmes métier, orchestrer
-              plusieurs agents spécialisés, et servir des modèles en local
-              (OpenAI-compatible via vLLM / llama.cpp).
-            </p>
-            <p>
-              Le reste, c'est de l'ingénierie backend Python qui tient la charge : API
-              REST, persistance, authentification, suites de tests. Je travaille de bout
-              en bout — du pipeline de données à l'interface — avec des garde-fous
-              (validation git de chaque changement, tests automatisés), parce qu'un
-              système d'IA ne vaut que si on peut lui faire confiance.
-            </p>
+            {t.about.paragraphs.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
           </div>
         </section>
 
         {/* ── CONTACT ── */}
         <section className="section" id="contact" aria-labelledby="contact-h">
           <div className="section-head">
-            <p className="section-kicker">04 — Contact</p>
-            <h2 className="section-title" id="contact-h">Travaillons ensemble</h2>
-            <p className="section-sub">Ouvert aux postes d'AI Software Engineer, LLM Engineer et Backend Python.</p>
+            <p className="section-kicker">{t.contact.kicker}</p>
+            <h2 className="section-title" id="contact-h">{t.contact.title}</h2>
+            <p className="section-sub">{t.contact.sub}</p>
           </div>
           <div className="contact-links">
             <a className="contact-card" href={links.github} target="_blank" rel="noreferrer">
               <GitHubIcon /> <span>GitHub</span><span className="contact-meta">@baDrsh531</span>
             </a>
-            {links.linkedin && (
-              <a className="contact-card" href={links.linkedin} target="_blank" rel="noreferrer">
-                <LinkedInIcon /> <span>LinkedIn</span><span className="contact-meta">Profil</span>
-              </a>
-            )}
-            {links.email && (
-              <a className="contact-card" href={`mailto:${links.email}`}>
-                <MailIcon /> <span>Email</span><span className="contact-meta">{links.email}</span>
-              </a>
-            )}
-            {links.phone && (
-              <a className="contact-card" href={`tel:${links.phone}`}>
-                <PhoneIcon /> <span>Téléphone</span><span className="contact-meta">{links.phone}</span>
-              </a>
-            )}
+            <a className="contact-card" href={links.linkedin} target="_blank" rel="noreferrer">
+              <LinkedInIcon /> <span>LinkedIn</span><span className="contact-meta">{t.contact.linkedinMeta}</span>
+            </a>
+            <a className="contact-card" href={`mailto:${links.email}`}>
+              <MailIcon /> <span>{t.contact.emailLabel}</span><span className="contact-meta">{links.email}</span>
+            </a>
+            <a className="contact-card" href={`tel:${links.phone}`}>
+              <PhoneIcon /> <span>{t.contact.phoneLabel}</span><span className="contact-meta">{links.phone}</span>
+            </a>
           </div>
         </section>
 
         <footer className="site-foot">
           <span>© {year} {OWNER.name}</span>
-          <span>Construit avec React &amp; Vite</span>
+          <span>{t.footer}</span>
         </footer>
       </main>
     </>

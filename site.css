@@ -100,7 +100,33 @@ body {
   white-space: nowrap;
 }
 .nav-brand-dot { color: var(--site-accent); }
+.nav-right { display: flex; align-items: center; gap: clamp(14px, 3vw, 24px); }
 .nav-links { display: flex; gap: clamp(14px, 3vw, 28px); }
+
+/* Sélecteur de langue (segmenté) */
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--site-border-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.lang-switch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  padding: 5px 9px;
+  color: var(--site-dim);
+  transition: background .15s ease, color .15s ease;
+}
+.lang-switch button.active { background: var(--site-btn); color: var(--site-on-btn); }
+.lang-switch button:not(.active):hover { color: var(--site-text); }
+.lang-switch button:focus-visible { outline: 2px solid var(--site-accent); outline-offset: 2px; }
 .nav-links a {
   font-size: .9rem;
   font-weight: 500;
