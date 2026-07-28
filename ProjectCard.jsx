@@ -112,6 +112,60 @@ export default function ProjectCard({ data = project }) {
         ))}
       </div>
 
+      {/* Sections optionnelles : une carte qui ne les fournit pas ne change pas
+          d'apparence. Un projet dont le cheminement technique mérite d'être
+          montré peut les renseigner. */}
+      {data.architecture && (
+        <section className="pc-block" aria-labelledby={`arch-${data.name}`}>
+          <h3 className="pc-block-title" id={`arch-${data.name}`}>
+            {data.architecture.title}
+          </h3>
+          <pre className="pc-diagram">{data.architecture.diagram}</pre>
+          {data.architecture.note && (
+            <p className="pc-block-note">{data.architecture.note}</p>
+          )}
+        </section>
+      )}
+
+      {(data.challenges || data.impact) && (
+        <div className="pc-columns">
+          {data.challenges && (
+            <section className="pc-block" aria-labelledby={`chal-${data.name}`}>
+              <h3 className="pc-block-title" id={`chal-${data.name}`}>
+                {data.challenges.title}
+              </h3>
+              <ul className="pc-list">
+                {data.challenges.items.map((item) => (
+                  <li key={item.label}>
+                    <strong>{item.label}</strong>
+                    <span>{item.detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {data.impact && (
+            <section className="pc-block" aria-labelledby={`imp-${data.name}`}>
+              <h3 className="pc-block-title" id={`imp-${data.name}`}>
+                {data.impact.title}
+              </h3>
+              <ul className="pc-list">
+                {data.impact.items.map((item) => (
+                  <li key={item.label}>
+                    <strong>{item.label}</strong>
+                    <span>{item.detail}</span>
+                  </li>
+                ))}
+              </ul>
+              {data.impact.note && (
+                <p className="pc-block-note">{data.impact.note}</p>
+              )}
+            </section>
+          )}
+        </div>
+      )}
+
       <div className="pc-gallery">
         {data.screenshots.map((s) => (
           <figure key={s.file} className="pc-shot">
@@ -227,6 +281,70 @@ const CSS = `
   background: var(--pc-tile-bg);
   border: 1px solid var(--pc-border);
   border-radius: 999px;
+}
+
+/* ── Sections optionnelles : architecture, défis, impact ────────────────── */
+.pc-block {
+  margin: 26px 0 0;
+  padding: 20px 22px;
+  background: var(--pc-tile-bg);
+  border: 1px solid var(--pc-border);
+  border-radius: 12px;
+}
+.pc-block-title {
+  margin: 0 0 14px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--pc-accent);
+}
+.pc-block-note {
+  margin: 14px 0 0;
+  font-size: .85rem;
+  color: var(--pc-faint);
+}
+
+/* Le schéma est du texte : il reste lisible sans image, se sélectionne et se
+   copie. Il déborde horizontalement sur mobile plutôt que de se replier. */
+.pc-diagram {
+  margin: 0;
+  overflow-x: auto;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  font-size: .74rem;
+  line-height: 1.5;
+  color: var(--pc-text);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.pc-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 12px;
+}
+.pc-columns .pc-block { margin-top: 26px; }
+
+.pc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pc-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: .9rem;
+}
+.pc-list strong {
+  font-weight: 600;
+  color: var(--pc-text);
+}
+.pc-list span {
+  color: var(--pc-dim);
 }
 
 .pc-metrics {
