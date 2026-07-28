@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard.jsx";
 import { matchiqProject } from "./matchiqProject.js";
 import { lighthouseProject } from "./lighthouseProject.js";
+import { recruitmentProject } from "./recruitmentProject.js";
 import { STRINGS, SKILLS } from "./i18n.js";
 
 /**
@@ -150,6 +151,7 @@ export default function App() {
             <p className="section-sub">{t.projects.sub}</p>
           </div>
           <div className="projects">
+            <ProjectCard data={recruitmentProject[lang]} />
             <ProjectCard data={matchiqProject[lang]} />
             <ProjectCard data={lighthouseProject[lang]} />
           </div>
