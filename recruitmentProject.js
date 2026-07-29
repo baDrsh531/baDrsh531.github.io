@@ -1,7 +1,7 @@
 // ─── DONNÉES DU PROJET : Recrutement.IA (bilingue FR / EN) ──────────────────
 // Passé à <ProjectCard data={...} /> dans App.jsx. Même schéma que l'objet
 // `project` par défaut de ProjectCard.jsx — on ne touche pas au composant.
-// Chiffres MESURÉS le 2026-07-28 : suite de tests exécutée (284 tests, 76 % de
+// Chiffres MESURÉS le 2026-07-29 : suite de tests exécutée (313 tests, 80 % de
 // couverture), harnais d'évaluation du classement (nDCG@5 0,997 sur 7 cas
 // annotés) et audit de biais par contrefactuels (ratio d'impact 0,809 → 1,000).
 // Captures dans public/screenshots/ (préfixe recruitment-).
@@ -13,10 +13,10 @@ export const recruitmentProject = {
     tagline:
       "Aider un recruteur à trier des candidatures sans jamais lui demander de croire une note qu'il ne peut pas vérifier.",
     why:
-      "Trier des CV avec un modèle de langage est facile ; obtenir un résultat qu'on puisse défendre l'est beaucoup moins — la note change d'une exécution à l'autre, et rien ne dit d'où elle vient. Ici le score est calculé par un moteur déterministe à partir de poids explicites, le modèle se contente de le commenter, et aucune donnée extraite d'un CV n'est retenue sans une citation retrouvée mot pour mot dans le document. La qualité du classement et l'effet des attributs identitaires sont mesurés sur des jeux annotés puis verrouillés en intégration continue : le tri de candidatures étant un système d'IA à haut risque au sens de l'AI Act, le journal d'audit, la supervision humaine et le versionnage des prompts sont dans le modèle de données, pas en annexe.",
+      "Trier des CV avec un modèle de langage est facile ; obtenir un résultat qu'on puisse défendre l'est beaucoup moins — la note change d'une exécution à l'autre, et rien ne dit d'où elle vient. Ici le score est calculé par un moteur déterministe à partir de poids explicites, le modèle se contente de le commenter, et aucune donnée extraite d'un CV n'est retenue sans une citation retrouvée mot pour mot dans le document. La qualité du classement et l'effet des attributs identitaires sont mesurés sur des jeux annotés puis verrouillés en intégration continue : le tri de candidatures étant un système d'IA à haut risque au sens de l'AI Act, la supervision humaine n'est pas une intention mais un comportement — écarter un candidat demande un motif écrit, un compte non habilité se voit refuser l'action et le refus est journalisé, et chaque dossier porte une échéance de conservation qu'une purge quotidienne fait respecter.",
     stack: ["Python 3.11", "Django 5", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "SVG sans dépendance", "GitHub Actions"],
     metrics: [
-      { value: "284", label: "tests automatisés", detail: "76 % de couverture, exécutés en intégration continue" },
+      { value: "313", label: "tests automatisés", detail: "80 % de couverture, exécutés en intégration continue" },
       { value: "0,997", label: "nDCG@5 du classement", detail: "sur 7 cas annotés à la main, non-régression verrouillée" },
       { value: "1,000", label: "ratio d'impact après atténuation", detail: "0,809 avant — règle dite des quatre cinquièmes" },
     ],
@@ -68,6 +68,7 @@ Classement          Qwen3.6-35B
         { label: "Rapprochement sémantique mesuré, puis débranché", detail: "Le modèle d'embeddings notait « Kubernetes / Boulangerie » au-dessus de « Symfony / Laravel ». Couche désactivée par défaut, mesure laissée reproductible." },
         { label: "Un score qu'on puisse défendre", detail: "Ontologie à relations dirigées — Django implique Python, jamais l'inverse — poids renormalisés sur les seuls critères exprimés par l'offre." },
         { label: "Un assistant incapable d'inventer un candidat", detail: "Le modèle traduit la question en critères, le code filtre la base, et le modèle ne rédige qu'à partir des lignes trouvées. La même question renvoie toujours la même liste." },
+        { label: "Une purge qui aurait épargné les dossiers existants", detail: "L'échéance n'était posée qu'à l'écriture ; les dossiers déjà en base gardaient un champ vide, et un filtre sur une date ne sélectionne jamais un NULL. Ils auraient été conservés indéfiniment par la fonctionnalité censée l'empêcher — une migration leur donne une échéance calculée depuis leur date de création réelle." },
       ],
     },
 
@@ -80,6 +81,7 @@ Classement          Qwen3.6-35B
         { label: "Six questions d'entretien en neuf secondes", detail: "Chacune ancrée dans une affirmation précise du profil, avec ce qu'une bonne réponse contient." },
         { label: "Biais de localisation neutralisé", detail: "Ratio d'impact ramené de 0,809 à 1,000 par le screening à l'aveugle, mesuré avant et après." },
         { label: "Recherche en français, résultat vérifiable", detail: "« Qui connaît Django mais pas React ? » répond en quatre secondes, avec les critères appliqués affichés et un critère discriminatoire écarté s'il y en avait un." },
+        { label: "Aucune candidature écartée sans un motif écrit", detail: "Le moteur classe, il ne rejette personne : sortir un candidat du processus demande un motif, est imputé à son auteur, et reste refusé aux comptes non habilités — refus compris, le journal garde tout." },
       ],
       note:
         "Chiffres relevés sur les jeux de test du dépôt, reproductibles par les commandes du README. Le gain de temps de présélection en conditions réelles n'a pas été mesuré : il n'est donc pas revendiqué.",
@@ -94,6 +96,9 @@ Classement          Qwen3.6-35B
       { file: "recruitment-candidate.png", caption: "Profil extrait du CV : chaque donnée cite le passage qui la justifie" },
       { file: "recruitment-bias.png", caption: "Audit de biais par contrefactuels : effet mesuré de chaque attribut identitaire" },
       { file: "recruitment-questions.png", caption: "Questions d'entretien ancrées dans une affirmation précise du profil" },
+      { file: "recruitment-decision.png", caption: "Écarter un candidat exige un motif écrit ; le journal conserve toutes les décisions" },
+      { file: "recruitment-roles.png", caption: "Un compte en lecture seule est refusé sur toute action, et le refus est journalisé" },
+      { file: "recruitment-retention.png", caption: "Conservation RGPD : échéance par dossier, purge quotidienne en cascade" },
       { file: "recruitment-dashboard.png", caption: "Tableau de bord : compétences, ancienneté, distribution des scores" },
     ],
     repoUrl: "https://github.com/baDrsh531/ai-recruitment-assistant",
@@ -106,10 +111,10 @@ Classement          Qwen3.6-35B
     tagline:
       "Helping a recruiter shortlist applications without ever asking them to trust a score they cannot check.",
     why:
-      "Ranking CVs with a language model is easy; getting a result you can defend is much harder — the score shifts between runs, and nothing says where it came from. Here the score is computed by a deterministic engine from explicit weights, the model only comments on it, and no data extracted from a CV is kept without a quote found verbatim in the document. Ranking quality and the effect of identity attributes are measured on annotated datasets and locked in continuous integration: since CV screening is a high-risk AI system under the EU AI Act, the audit log, human oversight and prompt versioning live in the data model, not in an appendix.",
+      "Ranking CVs with a language model is easy; getting a result you can defend is much harder — the score shifts between runs, and nothing says where it came from. Here the score is computed by a deterministic engine from explicit weights, the model only comments on it, and no data extracted from a CV is kept without a quote found verbatim in the document. Ranking quality and the effect of identity attributes are measured on annotated datasets and locked in continuous integration: since CV screening is a high-risk AI system under the EU AI Act, human oversight is a behaviour rather than an intention — rejecting a candidate requires a written reason, an account without the right is refused the action and the refusal is logged, and every file carries a retention deadline that a daily purge enforces.",
     stack: ["Python 3.11", "Django 5", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "Dependency-free SVG", "GitHub Actions"],
     metrics: [
-      { value: "284", label: "automated tests", detail: "76% coverage, run in continuous integration" },
+      { value: "313", label: "automated tests", detail: "80% coverage, run in continuous integration" },
       { value: "0.997", label: "ranking nDCG@5", detail: "across 7 hand-annotated cases, regression-locked" },
       { value: "1.000", label: "impact ratio after mitigation", detail: "0.809 before — the four-fifths rule" },
     ],
@@ -161,6 +166,7 @@ Shortlist           Qwen3.6-35B
         { label: "Semantic matching measured, then switched off", detail: "The embedding model scored « Kubernetes / Bakery » above « Symfony / Laravel ». The layer is off by default, the measurement left reproducible." },
         { label: "A score you can defend", detail: "Directed ontology — Django implies Python, never the reverse — and weights renormalised over the criteria the role actually states." },
         { label: "An assistant that cannot invent a candidate", detail: "The model turns the question into criteria, code filters the database, and the model only writes from the rows it was handed. The same question always returns the same list." },
+        { label: "A purge that would have spared the existing files", detail: "The deadline was only set on write; files already in the database kept an empty field, and a date filter never selects a NULL. They would have been kept forever by the very feature meant to prevent it — a migration gives them a deadline computed from their real creation date." },
       ],
     },
 
@@ -173,6 +179,7 @@ Shortlist           Qwen3.6-35B
         { label: "Six interview questions in nine seconds", detail: "Each anchored in a specific claim from the profile, with what a good answer contains." },
         { label: "Location bias neutralised", detail: "Impact ratio brought from 0.809 to 1.000 by blind screening, measured before and after." },
         { label: "Plain-language search, verifiable result", detail: "« Who knows Django but not React ? » answers in four seconds, showing the criteria that were applied — and any discriminatory one that was dropped." },
+        { label: "No application dropped without a written reason", detail: "The engine ranks, it rejects no one: taking a candidate out of the process requires a reason, is attributed to its author, and stays barred to accounts without the right — refusals included, the log keeps everything." },
       ],
       note:
         "Figures taken from the repository's test datasets, reproducible with the README commands. Real-world shortlisting time savings were not measured, so they are not claimed.",
@@ -187,6 +194,9 @@ Shortlist           Qwen3.6-35B
       { file: "recruitment-candidate.png", caption: "Profile extracted from the CV: every field cites the passage backing it" },
       { file: "recruitment-bias.png", caption: "Counterfactual bias audit: measured effect of each identity attribute" },
       { file: "recruitment-questions.png", caption: "Interview questions anchored in a specific claim from the profile" },
+      { file: "recruitment-decision.png", caption: "Rejecting a candidate requires a written reason; the log keeps every decision" },
+      { file: "recruitment-roles.png", caption: "A read-only account is refused any action, and the refusal is logged" },
+      { file: "recruitment-retention.png", caption: "GDPR retention: a deadline per file, daily cascading purge" },
       { file: "recruitment-dashboard.png", caption: "Dashboard: skills, seniority, score distribution" },
     ],
     repoUrl: "https://github.com/baDrsh531/ai-recruitment-assistant",
