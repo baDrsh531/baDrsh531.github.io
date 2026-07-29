@@ -17,6 +17,33 @@ export const matchiqProject = {
       { value: "−59 %", label: "taille du bundle initial", detail: "852 → 352 kB" },
       { value: "3 / 3", label: "checks CI au vert", detail: "backend · frontend · secrets" },
     ],
+    architecture: {
+      title: "Architecture",
+      diagram: `API-Football          fixtures · stats · compositions · events
+  │
+  ▼
+Cache JSON             data/raw/ — chaque appel téléchargé une seule fois
+  │
+  ▼
+┌─── MOTEUR DE SCORE ─────┐   déterministe
+│ score composite         │   pondéré par poste
+│ normalisation par stat  │   aucun appel modèle
+└────────────┬────────────┘
+             │
+             ▼
+Interprétation LLM        Gemini
+  │                       homme du match · lecture tactique
+  ▼
+Cache rapports            data/processed/ — généré une seule fois
+  │
+  ▼
+SQLite                    matchiq.db — historique, fiches joueur / équipe
+  │
+  ▼
+API FastAPI ────────▶ Frontend React (Vite)`,
+      note:
+        "Chaque étage est mis en cache : une réponse API n'est téléchargée qu'une fois, un rapport LLM généré qu'une fois — l'app tourne sans épuiser le quota. Le LLM interprète des scores déjà calculés ; il ne les produit jamais.",
+    },
     screenshots: [
       { file: "report.png", caption: "Rapport de match : homme du match calculé et formations" },
       { file: "ai_report.png", caption: "Interprétation rédigée par le LLM, ancrée dans les chiffres" },
@@ -42,6 +69,33 @@ export const matchiqProject = {
       { value: "−59%", label: "initial bundle size", detail: "852 → 352 kB" },
       { value: "3 / 3", label: "CI checks green", detail: "backend · frontend · secrets" },
     ],
+    architecture: {
+      title: "Architecture",
+      diagram: `API-Football          fixtures · stats · line-ups · events
+  │
+  ▼
+JSON cache             data/raw/ — each call downloaded only once
+  │
+  ▼
+┌─── SCORING ENGINE ──────┐   deterministic
+│ composite score         │   weighted by position
+│ per-stat normalisation  │   no model call
+└────────────┬────────────┘
+             │
+             ▼
+LLM interpretation        Gemini
+  │                       man of the match · tactical read
+  ▼
+Reports cache             data/processed/ — generated only once
+  │
+  ▼
+SQLite                    matchiq.db — history, player / team pages
+  │
+  ▼
+FastAPI ────────────▶ React frontend (Vite)`,
+      note:
+        "Every stage is cached: an API response is downloaded only once, an LLM report generated only once — the app runs without burning through the quota. The LLM interprets already-computed scores; it never produces them.",
+    },
     screenshots: [
       { file: "report.png", caption: "Match report: computed man of the match and line-ups" },
       { file: "ai_report.png", caption: "LLM-written interpretation, grounded in the numbers" },
