@@ -1,7 +1,7 @@
 // ─── DONNÉES DU PROJET : Recrutement.IA (bilingue FR / EN) ──────────────────
 // Passé à <ProjectCard data={...} /> dans App.jsx. Même schéma que l'objet
 // `project` par défaut de ProjectCard.jsx — on ne touche pas au composant.
-// Chiffres MESURÉS le 2026-07-29 : suite de tests exécutée (412 tests, 82 % de
+// Chiffres MESURÉS le 2026-07-30 : suite de tests exécutée (458 tests, 82 % de
 // couverture), harnais d'évaluation du classement (nDCG@5 0,997 sur 7 cas
 // annotés) et audit de biais par contrefactuels (ratio d'impact 0,809 → 1,000).
 // Captures dans public/screenshots/ (préfixe recruitment-).
@@ -16,7 +16,7 @@ export const recruitmentProject = {
       "Trier des CV avec un modèle de langage est facile ; obtenir un résultat qu'on puisse défendre l'est beaucoup moins — la note change d'une exécution à l'autre, et rien ne dit d'où elle vient. Ici le score est calculé par un moteur déterministe à partir de poids explicites, le modèle se contente de le commenter, et aucune donnée extraite d'un CV n'est retenue sans une citation retrouvée mot pour mot dans le document. La qualité du classement et l'effet des attributs identitaires sont mesurés sur des jeux annotés puis verrouillés en intégration continue : le tri de candidatures étant un système d'IA à haut risque au sens de l'AI Act, la supervision humaine n'est pas une intention mais un comportement — écarter un candidat demande un motif écrit, un compte non habilité se voit refuser l'action et le refus est journalisé, et chaque dossier porte une échéance de conservation qu'une purge quotidienne fait respecter.",
     stack: ["Python 3.11", "Django 5", "DRF", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "SVG sans dépendance", "GitHub Actions"],
     metrics: [
-      { value: "412", label: "tests automatisés", detail: "82 % de couverture, exécutés en intégration continue" },
+      { value: "458", label: "tests automatisés", detail: "82 % de couverture, exécutés en intégration continue" },
       { value: "0,997", label: "nDCG@5 du classement", detail: "sur 7 cas annotés à la main, non-régression verrouillée" },
       { value: "1,000", label: "ratio d'impact après atténuation", detail: "0,809 avant — règle dite des quatre cinquièmes" },
     ],
@@ -71,6 +71,8 @@ Classement          Qwen3.6-35B
         { label: "Une purge qui aurait épargné les dossiers existants", detail: "L'échéance n'était posée qu'à l'écriture ; les dossiers déjà en base gardaient un champ vide, et un filtre sur une date ne sélectionne jamais un NULL. Ils auraient été conservés indéfiniment par la fonctionnalité censée l'empêcher — une migration leur donne une échéance calculée depuis leur date de création réelle." },
         { label: "Un tableau dont les lignes ne s'additionnaient pas", detail: "Le chemin vers le seuil affichait l'apport de chaque levier pris seul : 74 % puis « +21 points » donnait 83 %. Le facteur de recevabilité étant multiplicatif, deux écarts comblés ensemble rapportent moins que la somme de leurs effets. Le chemin porte désormais l'apport marginal, l'apport isolé restant dans une colonne à part." },
         { label: "Un seuil parfait qu'il ne faut pas croire", detail: "Le balayage donne 100 % de précision et de rappel à 85 % — mais sur une marge d'un seul point. Une séparation parfaite sur une marge aussi étroite en dit autant sur la facilité du jeu annoté que sur le moteur. La marge est donc publiée à côté du seuil, et le seuil retenu est le milieu de l'intervalle optimal, pas une de ses bornes." },
+        { label: "Un rappel qui ne peut pas atteindre 1", detail: "Une requête comptant sept profils pertinents pour cinq places plafonne à 0,71 : sans cette borne publiée à côté de la mesure, un sans-faute se lirait comme un manque. Le plafond atteignable figure donc dans le rapport, et il vaut exactement le rappel obtenu." },
+        { label: "Un compteur faux depuis toujours", detail: "L'en-tête de la liste des candidats affichait « 0 candidat(s) » dès qu'il y en avait. Le gabarit appliquait le filtre Django « length » à un entier, qui renvoie 0 : le nombre n'était juste que sur une base vide. C'est la recherche plein texte qui l'a rendu visible, en produisant une page où les deux chiffres se contredisaient à l'écran." },
       ],
     },
 
@@ -87,6 +89,8 @@ Classement          Qwen3.6-35B
         { label: "Un score devenu actionnable", detail: "« 61 % » ne dit rien. Le contrefactuel dit ce qui manque et de combien, en rejouant le moteur sur une copie du profil : chaque chiffre affiché est mesuré, jamais estimé. La localisation n'est jamais proposée comme levier." },
         { label: "Un seuil de coupe mesuré, pas choisi rond", detail: "Balayage des 101 seuils sur le jeu annoté, avec la marge du seuil retenu affichée à côté. La colonne qui compte est celle des bons profils écartés à tort — un chiffre qu'aucun processus réel ne peut observer." },
         { label: "Une personne comptée une fois", detail: "Un candidat qui repostule six mois plus tard créait deux dossiers, deux scores, et pouvait être écarté sur l'un sans qu'on sache que l'autre existait." },
+        { label: "Chercher ce qu'aucun filtre n'exprime", detail: "« Qui a travaillé sur des systèmes de paiement ? » n'est ni une compétence, ni une langue, ni un seuil. BM25 sur le profil extrait répond, sans appel modèle : rappel@5 de 0,959 sur un jeu annoté, soit exactement le maximum atteignable." },
+        { label: "Un rapport transmissible", detail: "Qualité du classement, biais mesurés, seuil et sa marge dans un PDF daté et versionné, généré sans dépendance supplémentaire — PyMuPDF était déjà là pour lire les CV. L'export est journalisé : un document qui sort du système est une donnée qui circule." },
       ],
       note:
         "Chiffres relevés sur les jeux de test du dépôt, reproductibles par les commandes du README. Le gain de temps de présélection en conditions réelles n'a pas été mesuré : il n'est donc pas revendiqué.",
@@ -97,6 +101,8 @@ Classement          Qwen3.6-35B
       { file: "recruitment-threshold.png", caption: "Où couper : chaque seuil, ce qu'il retient et surtout ce qu'il écarte à tort" },
       { file: "recruitment-counterfactual.png", caption: "Ce qui manque pour atteindre le seuil, mesuré en rejouant le moteur" },
       { file: "recruitment-duplicates.png", caption: "Deux dossiers pour la même personne — proposés au rapprochement, jamais fusionnés d'office" },
+      { file: "recruitment-search.png", caption: "Recherche BM25 dans le texte des profils : aucun appel modèle, résultat reproductible" },
+      { file: "recruitment-pdf.png", caption: "Rapport d'évaluation en PDF, daté et versionné — généré sans dépendance ajoutée" },
       { file: "recruitment-api.png", caption: "L'API applique le screening à l'aveugle : le nom est masqué, les identifiants directs retirés" },
       { file: "recruitment-application.png", caption: "Score détaillé par critère, poids appliqués et méthode de rapprochement" },
       { file: "recruitment-comparison.png", caption: "Comparaison : ce qui différencie vraiment quatre candidats, compétence par compétence" },
@@ -123,7 +129,7 @@ Classement          Qwen3.6-35B
       "Ranking CVs with a language model is easy; getting a result you can defend is much harder — the score shifts between runs, and nothing says where it came from. Here the score is computed by a deterministic engine from explicit weights, the model only comments on it, and no data extracted from a CV is kept without a quote found verbatim in the document. Ranking quality and the effect of identity attributes are measured on annotated datasets and locked in continuous integration: since CV screening is a high-risk AI system under the EU AI Act, human oversight is a behaviour rather than an intention — rejecting a candidate requires a written reason, an account without the right is refused the action and the refusal is logged, and every file carries a retention deadline that a daily purge enforces.",
     stack: ["Python 3.11", "Django 5", "DRF", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "Dependency-free SVG", "GitHub Actions"],
     metrics: [
-      { value: "412", label: "automated tests", detail: "82% coverage, run in continuous integration" },
+      { value: "458", label: "automated tests", detail: "82% coverage, run in continuous integration" },
       { value: "0.997", label: "ranking nDCG@5", detail: "across 7 hand-annotated cases, regression-locked" },
       { value: "1.000", label: "impact ratio after mitigation", detail: "0.809 before — the four-fifths rule" },
     ],
@@ -178,6 +184,8 @@ Shortlist           Qwen3.6-35B
         { label: "A purge that would have spared the existing files", detail: "The deadline was only set on write; files already in the database kept an empty field, and a date filter never selects a NULL. They would have been kept forever by the very feature meant to prevent it — a migration gives them a deadline computed from their real creation date." },
         { label: "A table whose rows did not add up", detail: "The path to the threshold showed each lever's gain taken alone: 74 % then « +21 points » landed on 83 %. The admissibility factor being multiplicative, two gaps closed together yield less than the sum of their separate effects. The path now carries the marginal gain, with the standalone figure kept in its own column." },
         { label: "A perfect threshold not to be believed", detail: "The sweep gives 100 % precision and recall at 85 % — but over a margin of a single point. A perfect split on so narrow a margin says as much about how easy the annotated set is as about the engine. The margin is therefore published next to the threshold, and the chosen value is the middle of the optimal interval, not one of its edges." },
+        { label: "A recall that cannot reach 1", detail: "A query with seven relevant profiles for five slots caps at 0.71: without that ceiling published beside the measure, a flawless result would read as a miss. The reachable ceiling is therefore in the report, and it equals the recall obtained." },
+        { label: "A counter that had always been wrong", detail: "The candidate list header showed « 0 candidate(s) » whenever there were any. The template applied Django's « length » filter to an integer, which returns 0: the number was only right on an empty database. Full-text search is what made it visible, by producing a page where the two figures contradicted each other on screen." },
       ],
     },
 
@@ -194,6 +202,8 @@ Shortlist           Qwen3.6-35B
         { label: "A score you can act on", detail: "« 61 % » says nothing. The counterfactual says what is missing and by how much, replaying the engine on a copy of the profile: every figure shown is measured, never estimated. Location is never offered as a lever." },
         { label: "A cut-off that is measured, not rounded", detail: "A sweep of all 101 thresholds over the annotated set, with the margin of the chosen one shown beside it. The column that matters is wrongly dropped good profiles — a number no real process can ever observe." },
         { label: "One person counted once", detail: "A candidate re-applying six months later created two records, two scores, and could be dropped on one without anyone knowing the other existed." },
+        { label: "Searching what no filter can express", detail: "« Who has worked on payment systems? » is neither a skill, nor a language, nor a threshold. BM25 over the extracted profile answers it with no model call: recall@5 of 0.959 on an annotated set — exactly the reachable maximum." },
+        { label: "A report you can hand over", detail: "Ranking quality, measured bias, threshold and its margin in a dated, versioned PDF, generated with no extra dependency — PyMuPDF was already there to read CVs. The export is logged: a document leaving the system is data in circulation." },
       ],
       note:
         "Figures taken from the repository's test datasets, reproducible with the README commands. Real-world shortlisting time savings were not measured, so they are not claimed.",
@@ -204,6 +214,8 @@ Shortlist           Qwen3.6-35B
       { file: "recruitment-threshold.png", caption: "Where to cut: every threshold, what it keeps and above all what it wrongly drops" },
       { file: "recruitment-counterfactual.png", caption: "What is missing to reach the threshold, measured by replaying the engine" },
       { file: "recruitment-duplicates.png", caption: "Two records for one person — proposed for merging, never merged automatically" },
+      { file: "recruitment-search.png", caption: "BM25 search across profile text: no model call, reproducible result" },
+      { file: "recruitment-pdf.png", caption: "Evaluation report as PDF, dated and versioned — generated with no added dependency" },
       { file: "recruitment-api.png", caption: "The API enforces blind screening: the name is masked, direct identifiers removed" },
       { file: "recruitment-application.png", caption: "Score broken down per criterion, applied weights and matching method" },
       { file: "recruitment-comparison.png", caption: "Comparison: what actually separates four candidates, skill by skill" },
