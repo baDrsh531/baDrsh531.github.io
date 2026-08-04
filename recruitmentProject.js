@@ -1,7 +1,7 @@
 // ─── DONNÉES DU PROJET : Recrutement.IA (bilingue FR / EN) ──────────────────
 // Passé à <ProjectCard data={...} /> dans App.jsx. Même schéma que l'objet
 // `project` par défaut de ProjectCard.jsx — on ne touche pas au composant.
-// Chiffres MESURÉS le 2026-07-30 : suite de tests exécutée (458 tests, 82 % de
+// Chiffres MESURÉS le 2026-07-31 : suite de tests exécutée (667 tests, 84 % de
 // couverture), harnais d'évaluation du classement (nDCG@5 0,997 sur 7 cas
 // annotés) et audit de biais par contrefactuels (ratio d'impact 0,809 → 1,000).
 // Captures dans public/screenshots/ (préfixe recruitment-).
@@ -16,7 +16,7 @@ export const recruitmentProject = {
       "Trier des CV avec un modèle de langage est facile ; obtenir un résultat qu'on puisse défendre l'est beaucoup moins — la note change d'une exécution à l'autre, et rien ne dit d'où elle vient. Ici le score est calculé par un moteur déterministe à partir de poids explicites, le modèle se contente de le commenter, et aucune donnée extraite d'un CV n'est retenue sans une citation retrouvée mot pour mot dans le document. La qualité du classement et l'effet des attributs identitaires sont mesurés sur des jeux annotés puis verrouillés en intégration continue : le tri de candidatures étant un système d'IA à haut risque au sens de l'AI Act, la supervision humaine n'est pas une intention mais un comportement — écarter un candidat demande un motif écrit, un compte non habilité se voit refuser l'action et le refus est journalisé, et chaque dossier porte une échéance de conservation qu'une purge quotidienne fait respecter.",
     stack: ["Python 3.11", "Django 5", "DRF", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "SVG sans dépendance", "GitHub Actions"],
     metrics: [
-      { value: "458", label: "tests automatisés", detail: "82 % de couverture, exécutés en intégration continue" },
+      { value: "667", label: "tests automatisés", detail: "84 % de couverture, exécutés en intégration continue" },
       { value: "0,997", label: "nDCG@5 du classement", detail: "sur 7 cas annotés à la main, non-régression verrouillée" },
       { value: "1,000", label: "ratio d'impact après atténuation", detail: "0,809 avant — règle dite des quatre cinquièmes" },
     ],
@@ -91,6 +91,9 @@ Classement          Qwen3.6-35B
         { label: "Une personne comptée une fois", detail: "Un candidat qui repostule six mois plus tard créait deux dossiers, deux scores, et pouvait être écarté sur l'un sans qu'on sache que l'autre existait." },
         { label: "Chercher ce qu'aucun filtre n'exprime", detail: "« Qui a travaillé sur des systèmes de paiement ? » n'est ni une compétence, ni une langue, ni un seuil. BM25 sur le profil extrait répond, sans appel modèle : rappel@5 de 0,959 sur un jeu annoté, soit exactement le maximum atteignable." },
         { label: "Un rapport transmissible", detail: "Qualité du classement, biais mesurés, seuil et sa marge dans un PDF daté et versionné, généré sans dépendance supplémentaire — PyMuPDF était déjà là pour lire les CV. L'export est journalisé : un document qui sort du système est une donnée qui circule." },
+        { label: "Personne n'est écarté sans qu'on ait regardé ailleurs", detail: "Un candidat sous le seuil sur une offre mais au-dessus sur une autre est signalé au lieu de disparaître. C'est un signalement, pas un transfert : postuler ailleurs appartient au candidat. La page distingue « aucune autre offre ne conviendrait » de « on n'a pas regardé »." },
+        { label: "Un CV arabe devient lisible", detail: "Un PDF arabe stocke des formes de présentation, pas les lettres de base : « سارة » écrit dans le CV ressort en « ﺱﺍﺭﺓ ». Sans normalisation, 2 champs sur 8 sont retrouvés ; avec, 7 sur 8." },
+        { label: "Le coût d'une pondération est visible avant de l'appliquer", detail: "Baisser le poids des compétences de 0,45 à 0,20 fait tomber le ratio d'impact de 0,809 à 0,714 — sous le seuil légal — sans toucher au poids de la localisation. Aucun recruteur ne devinerait cela en déplaçant un curseur." },
       ],
       note:
         "Chiffres relevés sur les jeux de test du dépôt, reproductibles par les commandes du README. Le gain de temps de présélection en conditions réelles n'a pas été mesuré : il n'est donc pas revendiqué.",
@@ -98,7 +101,11 @@ Classement          Qwen3.6-35B
 
     screenshots: [
       { file: "recruitment-ranking.png", caption: "Classement d'une offre, avec le seuil de coupe mesuré — la ligne marque, elle n'écarte pas" },
+      { file: "recruitment-weights.png", caption: "Baisser le poids des compétences fait franchir le seuil légal — sans toucher à la localisation" },
       { file: "recruitment-threshold.png", caption: "Où couper : chaque seuil, ce qu'il retient et surtout ce qu'il écarte à tort" },
+      { file: "recruitment-redirect.png", caption: "Sous le seuil ici, au-dessus ailleurs : l'offre est signalée, jamais la candidature transférée" },
+      { file: "recruitment-agreement.png", caption: "Accord brut 0,67, kappa 0,25 : le pourcentage aurait fait croire à un consensus" },
+      { file: "recruitment-arabic.png", caption: "CV arabe généré pour mesurer l'extraction : 2 champs sur 8 sans normalisation, 7 avec" },
       { file: "recruitment-counterfactual.png", caption: "Ce qui manque pour atteindre le seuil, mesuré en rejouant le moteur" },
       { file: "recruitment-duplicates.png", caption: "Deux dossiers pour la même personne — proposés au rapprochement, jamais fusionnés d'office" },
       { file: "recruitment-search.png", caption: "Recherche BM25 dans le texte des profils : aucun appel modèle, résultat reproductible" },
@@ -114,7 +121,7 @@ Classement          Qwen3.6-35B
       { file: "recruitment-decision.png", caption: "Écarter un candidat exige un motif écrit ; le journal conserve toutes les décisions" },
       { file: "recruitment-roles.png", caption: "Un compte en lecture seule est refusé sur toute action, et le refus est journalisé" },
       { file: "recruitment-retention.png", caption: "Conservation RGPD : échéance par dossier, purge quotidienne en cascade" },
-      { file: "recruitment-dashboard.png", caption: "Tableau de bord : compétences, ancienneté, distribution des scores" },
+      { file: "recruitment-dashboard.png", caption: "Tableau de bord : trois jauges en tête, puis compétences, ancienneté et distribution des scores" },
     ],
     repoUrl: "https://github.com/baDrsh531/ai-recruitment-assistant",
     demo: { status: "pending", label: "Démo : code prêt, déploiement en attente" },
@@ -129,7 +136,7 @@ Classement          Qwen3.6-35B
       "Ranking CVs with a language model is easy; getting a result you can defend is much harder — the score shifts between runs, and nothing says where it came from. Here the score is computed by a deterministic engine from explicit weights, the model only comments on it, and no data extracted from a CV is kept without a quote found verbatim in the document. Ranking quality and the effect of identity attributes are measured on annotated datasets and locked in continuous integration: since CV screening is a high-risk AI system under the EU AI Act, human oversight is a behaviour rather than an intention — rejecting a candidate requires a written reason, an account without the right is refused the action and the refusal is logged, and every file carries a retention deadline that a daily purge enforces.",
     stack: ["Python 3.11", "Django 5", "DRF", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "Dependency-free SVG", "GitHub Actions"],
     metrics: [
-      { value: "458", label: "automated tests", detail: "82% coverage, run in continuous integration" },
+      { value: "667", label: "automated tests", detail: "84% coverage, run in continuous integration" },
       { value: "0.997", label: "ranking nDCG@5", detail: "across 7 hand-annotated cases, regression-locked" },
       { value: "1.000", label: "impact ratio after mitigation", detail: "0.809 before — the four-fifths rule" },
     ],
@@ -204,6 +211,9 @@ Shortlist           Qwen3.6-35B
         { label: "One person counted once", detail: "A candidate re-applying six months later created two records, two scores, and could be dropped on one without anyone knowing the other existed." },
         { label: "Searching what no filter can express", detail: "« Who has worked on payment systems? » is neither a skill, nor a language, nor a threshold. BM25 over the extracted profile answers it with no model call: recall@5 of 0.959 on an annotated set — exactly the reachable maximum." },
         { label: "A report you can hand over", detail: "Ranking quality, measured bias, threshold and its margin in a dated, versioned PDF, generated with no extra dependency — PyMuPDF was already there to read CVs. The export is logged: a document leaving the system is data in circulation." },
+        { label: "Nobody is dropped before looking elsewhere", detail: "A candidate below the bar on one role but above it on another is flagged instead of vanishing. It is a flag, not a transfer: applying elsewhere belongs to the candidate. The page distinguishes « no other role would fit » from « nobody looked »." },
+        { label: "An Arabic CV becomes readable", detail: "An Arabic PDF stores presentation forms, not base letters: « سارة » written in the CV comes back as « ﺱﺍﺭﺓ ». Without normalisation, 2 fields of 8 are recovered; with it, 7 of 8." },
+        { label: "The price of a weighting is visible before applying it", detail: "Lowering the weight of skills from 0.45 to 0.20 drops the impact ratio from 0.809 to 0.714 — below the legal threshold — without touching the weight of location. No recruiter would guess that by moving a slider." },
       ],
       note:
         "Figures taken from the repository's test datasets, reproducible with the README commands. Real-world shortlisting time savings were not measured, so they are not claimed.",
@@ -211,7 +221,11 @@ Shortlist           Qwen3.6-35B
 
     screenshots: [
       { file: "recruitment-ranking.png", caption: "Shortlist for a role, with the measured cut-off — the line marks, it does not reject" },
+      { file: "recruitment-weights.png", caption: "Lowering the weight of skills crosses the legal threshold — without touching location" },
       { file: "recruitment-threshold.png", caption: "Where to cut: every threshold, what it keeps and above all what it wrongly drops" },
+      { file: "recruitment-redirect.png", caption: "Below the bar here, above it elsewhere: the role is flagged, the application never moved" },
+      { file: "recruitment-agreement.png", caption: "Raw agreement 0.67, kappa 0.25: the percentage would have suggested a consensus" },
+      { file: "recruitment-arabic.png", caption: "Arabic CV generated to measure extraction: 2 fields of 8 without normalisation, 7 with" },
       { file: "recruitment-counterfactual.png", caption: "What is missing to reach the threshold, measured by replaying the engine" },
       { file: "recruitment-duplicates.png", caption: "Two records for one person — proposed for merging, never merged automatically" },
       { file: "recruitment-search.png", caption: "BM25 search across profile text: no model call, reproducible result" },
@@ -227,7 +241,7 @@ Shortlist           Qwen3.6-35B
       { file: "recruitment-decision.png", caption: "Rejecting a candidate requires a written reason; the log keeps every decision" },
       { file: "recruitment-roles.png", caption: "A read-only account is refused any action, and the refusal is logged" },
       { file: "recruitment-retention.png", caption: "GDPR retention: a deadline per file, daily cascading purge" },
-      { file: "recruitment-dashboard.png", caption: "Dashboard: skills, seniority, score distribution" },
+      { file: "recruitment-dashboard.png", caption: "Dashboard: three gauges up top, then skills, seniority and score distribution" },
     ],
     repoUrl: "https://github.com/baDrsh531/ai-recruitment-assistant",
     demo: { status: "pending", label: "Demo: code ready, deployment pending" },
