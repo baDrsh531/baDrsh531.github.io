@@ -3,6 +3,7 @@ import ProjectCard from "./ProjectCard.jsx";
 import { matchiqProject } from "./matchiqProject.js";
 import { lighthouseProject } from "./lighthouseProject.js";
 import { recruitmentProject } from "./recruitmentProject.js";
+import { crewProject } from "./crewProject.js";
 import { STRINGS, SKILLS } from "./i18n.js";
 
 /**
@@ -154,6 +155,7 @@ export default function App() {
             <ProjectCard data={recruitmentProject[lang]} />
             <ProjectCard data={matchiqProject[lang]} />
             <ProjectCard data={lighthouseProject[lang]} />
+            <ProjectCard data={crewProject[lang]} />
           </div>
         </section>
 

@@ -182,10 +182,20 @@ export default function ProjectCard({ data = project }) {
       </div>
 
       <footer className="pc-actions">
-        <a className="pc-btn pc-btn-primary" href={data.repoUrl} target="_blank" rel="noreferrer">
-          <GitHubIcon />
-          Code source
-        </a>
+        {/* Même raisonnement que la démo ci-dessous : un repoUrl vide donnait
+            un <a href=""> qui rechargeait la page — un bouton mort est plus
+            trompeur qu'un bouton absent. */}
+        {data.repoUrl ? (
+          <a className="pc-btn pc-btn-primary" href={data.repoUrl} target="_blank" rel="noreferrer">
+            <GitHubIcon />
+            Code source
+          </a>
+        ) : (
+          <span className="pc-demo-pending">
+            <GitHubIcon />
+            {data.repoLabel ?? "Code source : dépôt privé"}
+          </span>
+        )}
 
         {data.demo.status === "live" ? (
           <a className="pc-btn pc-btn-ghost" href={data.demo.url} target="_blank" rel="noreferrer">
