@@ -153,9 +153,13 @@ export default function App() {
           </div>
           <div className="projects">
             <ProjectCard data={recruitmentProject[lang]} />
+            {/* Crew et Lighthouse répondent à la même question de deux façons
+                opposées et se citent mutuellement ; MatchIQ entre les deux
+                évite qu'ils se lisent comme un doublon, et garde l'ordre des
+                renvois « plus bas » / « plus haut » exact. */}
+            <ProjectCard data={crewProject[lang]} />
             <ProjectCard data={matchiqProject[lang]} />
             <ProjectCard data={lighthouseProject[lang]} />
-            <ProjectCard data={crewProject[lang]} />
           </div>
         </section>
 

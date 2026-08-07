@@ -12,7 +12,7 @@ export const crewProject = {
     tagline:
       "Cinq agents se transmettent des documents typés sous un orchestrateur qui n'est pas une IA — et un banc d'essai à tests cachés dit si le résultat tient.",
     why:
-      "Un agent de code qui discute avec lui-même produit une trace qu'on ne peut ni vérifier ni rejouer. Ici chaque relais est un document typé, validé par JSON Schema : le cadrage produit une spécification, l'architecte un plan, le développeur un jeu de modifications, la QA un verdict. L'orchestrateur qui enchaîne ces phases est une machine à états écrite en Python — aucun modèle ne décide de la suite, donc le déroulement est reproductible. Tout est écrit dans un journal d'événements SQLite avant d'être exécuté : on peut donc rembobiner un run seconde par seconde et voir l'état exact à l'instant où il a dérapé. Chaque run travaille dans son propre worktree git, ce qui permet de les faire tourner en parallèle et de tout jeter d'un clic. Et parce qu'une équipe qui écrit ses propres tests peut les écrire faibles, un banc d'essai copie des tests d'acceptation cachés après coup : l'équipe ne les voit jamais et ne peut pas s'y ajuster.",
+      "Un agent de code qui discute avec lui-même produit une trace qu'on ne peut ni vérifier ni rejouer. Ici chaque relais est un document typé, validé par JSON Schema : le cadrage produit une spécification, l'architecte un plan, le développeur un jeu de modifications, la QA un verdict. L'orchestrateur qui enchaîne ces phases est une machine à états écrite en Python — aucun modèle ne décide de la suite, donc le déroulement est reproductible. Tout est écrit dans un journal d'événements SQLite avant d'être exécuté : on peut donc rembobiner un run seconde par seconde et voir l'état exact à l'instant où il a dérapé. Chaque run travaille dans son propre worktree git, ce qui permet de les faire tourner en parallèle et de tout jeter d'un clic. Et parce qu'une équipe qui écrit ses propres tests peut les écrire faibles, un banc d'essai copie des tests d'acceptation cachés après coup : l'équipe ne les voit jamais et ne peut pas s'y ajuster. C'est le pari inverse de Lighthouse Agents, plus bas dans cette page : là, un agent exécutif décompose la tâche et s'adapte à ce qu'il trouve ; ici, c'est du code qui enchaîne les phases. On perd en souplesse, on gagne un déroulement qui se répète — et qu'on peut donc mesurer.",
     stack: [
       "Python 3.11", "FastAPI", "SSE", "SQLite (event store)", "Pydantic",
       "pytest", "React 19", "TypeScript", "Vite",
@@ -21,7 +21,7 @@ export const crewProject = {
     metrics: [
       { value: "279", label: "tests au vert", detail: "87 % de couverture sur backend/app" },
       { value: "7", label: "artefacts typés", detail: "chaque relais validé par JSON Schema avant d'être transmis" },
-      { value: "4", label: "tâches à tests cachés", detail: "copiés après le run — l'équipe ne les voit jamais" },
+      { value: "48", label: "runs mesurés", detail: "sur 4 tâches dont les tests d'acceptation sont copiés après coup" },
     ],
     architecture: {
       title: "Architecture",
@@ -117,7 +117,7 @@ export const crewProject = {
     tagline:
       "Five agents hand typed documents to one another under an orchestrator that is not an AI — and a hidden-test benchmark says whether the result holds up.",
     why:
-      "A coding agent that talks to itself produces a trace you can neither check nor replay. Here every hand-off is a typed document validated by JSON Schema: intake produces a specification, the architect a plan, the developer a change set, QA a verdict. The orchestrator chaining those phases is a state machine written in Python — no model decides what comes next, so the sequence is reproducible. Everything is appended to a SQLite event log before it is acted on, so a run can be rewound second by second to the exact state it was in when it went wrong. Each run works in its own git worktree, which is what lets runs overlap and what makes discarding one a delete. And because a team that writes its own tests can write weak ones, a benchmark copies hidden acceptance tests in afterwards: the crew never sees them and cannot tune to them.",
+      "A coding agent that talks to itself produces a trace you can neither check nor replay. Here every hand-off is a typed document validated by JSON Schema: intake produces a specification, the architect a plan, the developer a change set, QA a verdict. The orchestrator chaining those phases is a state machine written in Python — no model decides what comes next, so the sequence is reproducible. Everything is appended to a SQLite event log before it is acted on, so a run can be rewound second by second to the exact state it was in when it went wrong. Each run works in its own git worktree, which is what lets runs overlap and what makes discarding one a delete. And because a team that writes its own tests can write weak ones, a benchmark copies hidden acceptance tests in afterwards: the crew never sees them and cannot tune to them. This is the opposite bet from Lighthouse Agents, further down this page: there an executive agent breaks the task down and adapts to what it finds; here code drives the phases. You lose flexibility and gain a sequence that repeats — and can therefore be measured.",
     stack: [
       "Python 3.11", "FastAPI", "SSE", "SQLite (event store)", "Pydantic",
       "pytest", "React 19", "TypeScript", "Vite",
@@ -126,7 +126,7 @@ export const crewProject = {
     metrics: [
       { value: "279", label: "passing tests", detail: "87% coverage over backend/app" },
       { value: "7", label: "typed artifacts", detail: "every hand-off schema-validated before it is passed on" },
-      { value: "4", label: "hidden-test tasks", detail: "copied in after the run — the crew never sees them" },
+      { value: "48", label: "measured runs", detail: "across 4 tasks whose acceptance tests are copied in afterwards" },
     ],
     architecture: {
       title: "Architecture",

@@ -19,7 +19,11 @@ export const STRINGS = {
     projects: {
       kicker: "01 — Projets IA",
       title: "Ce que je construis",
-      sub: "Ma spécialité : des applications où le LLM fait le travail. Deux systèmes complets, du backend au modèle — chiffres mesurés, code public.",
+      // Un décompte en toutes lettres se périme à chaque projet ajouté, et
+      // « code public » est devenu faux dès qu'une carte n'a plus de dépôt
+      // ouvert. La phrase dit maintenant ce qui reste vrai quel qu'en soit
+      // le nombre.
+      sub: "Ma spécialité : des applications où le LLM fait le travail — du backend au modèle, avec des chiffres mesurés plutôt qu'annoncés.",
     },
     skills: {
       kicker: "02 — Stack",
@@ -60,7 +64,7 @@ export const STRINGS = {
     projects: {
       kicker: "01 — AI Projects",
       title: "What I build",
-      sub: "My specialty: applications where the LLM does the work. Two complete systems, from backend to model — measured numbers, public code.",
+      sub: "My specialty: applications where the LLM does the work — from backend to model, with numbers that were measured rather than claimed.",
     },
     skills: {
       kicker: "02 — Stack",
