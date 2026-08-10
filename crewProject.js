@@ -55,9 +55,9 @@ export const crewProject = {
       title: "Défis techniques",
       items: [
         {
-          label: "Une optimisation plausible, mesurée pire — et livrée éteinte",
+          label: "Une optimisation plausible, livrée éteinte faute de preuve",
           detail:
-            "Injecter une carte statique du dépôt dans chaque prompt devait épargner des appels d'exploration. Le banc d'essai a mesuré +33 % d'appels d'outils et +58 % de tokens pour autant de réussites. Le code est resté, désactivé par défaut, avec la mesure écrite à côté.",
+            "Injecter une carte statique du dépôt dans chaque prompt devait épargner des appels d'exploration. Le total sur les quatre tâches est ressorti moins bon — mais sur un seul run par tâche, et la règle du banc d'essai est qu'un écart n'est réel que si les plages observées ne se recouvrent pas. Sans répétition il n'y a pas de plage, et le comparateur le dit lui-même : « indistinguable ». La conclusion n'est donc pas « la carte coûte plus cher » mais « rien ne montre qu'elle aide » — ce qui suffit à livrer l'option éteinte.",
         },
         {
           label: "La variance venait de moi, pas du modèle",
@@ -107,7 +107,7 @@ export const crewProject = {
       { file: "crew-couts.png", caption: "Consommation par agent : le développeur pèse 315 575 des 417 512 tokens, et le total correspond exactement au plafond annoncé" },
       { file: "crew-comparer.png", caption: "Deux runs de la même tâche comparés : −26 appels d'outils (−38 %) pour +4,6k tokens — l'écart est coloré selon le sens qui compte pour chaque mesure" },
     ],
-    repoUrl: "",
+    repoUrl: "https://github.com/baDrsh531/agent-dev-crew",
     demo: { status: "pending", label: "Démo : code prêt, déploiement en attente" },
   },
 
@@ -160,9 +160,9 @@ export const crewProject = {
       title: "Technical challenges",
       items: [
         {
-          label: "A plausible optimisation, measured worse — and shipped switched off",
+          label: "A plausible optimisation, shipped switched off for want of evidence",
           detail:
-            "Injecting a static map of the repository into every prompt was meant to save exploration calls. The benchmark measured +33% tool calls and +58% tokens for the same number of passes. The code stayed, disabled by default, with the measurement written beside it.",
+            "Injecting a static map of the repository into every prompt was meant to save exploration calls. Summed over the four tasks it came out worse — but on one run per task, and the harness's rule is that a difference is real only when the observed ranges do not overlap. With no repetitions there are no ranges, and the comparator says so itself: indistinguishable. So the finding is not \"the map costs more\" but \"nothing shows it helps\" — which is reason enough to ship it switched off.",
         },
         {
           label: "The variance was mine, not the model's",
@@ -212,7 +212,7 @@ export const crewProject = {
       { file: "crew-couts.png", caption: "Consumption per agent: the developer accounts for 315,575 of 417,512 tokens, and the total matches the ceiling message exactly" },
       { file: "crew-comparer.png", caption: "Two runs of the same task compared: −26 tool calls (−38%) for +4.6k tokens — each delta coloured by the direction that matters for that metric" },
     ],
-    repoUrl: "",
+    repoUrl: "https://github.com/baDrsh531/agent-dev-crew",
     demo: { status: "pending", label: "Demo: code ready, deployment pending" },
   },
 };
