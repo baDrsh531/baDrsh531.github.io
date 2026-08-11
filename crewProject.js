@@ -1,8 +1,8 @@
 // ─── DONNÉES DU PROJET : Agent Dev Crew (bilingue FR / EN) ──────────────────
 // Passé à <ProjectCard data={...} /> dans App.jsx. Même schéma que l'objet
 // `project` par défaut de ProjectCard.jsx — on ne touche pas au composant.
-// Chiffres MESURÉS le 2026-08-07 : 279 tests, 87 % de couverture sur backend/app,
-// 7 artefacts typés, 4 tâches de benchmark à tests cachés.
+// Chiffres MESURÉS le 2026-08-11 : 297 tests backend (87 % de couverture) +
+// 89 tests frontend, 7 artefacts typés, 24 runs comparés sur 4 tâches.
 // Captures dans public/screenshots/ (préfixe crew-), prises sur 48 runs réels.
 
 export const crewProject = {
@@ -19,9 +19,9 @@ export const crewProject = {
       "llama.cpp", "Qwen3.6-35B-A3B", "Git worktrees",
     ],
     metrics: [
-      { value: "279", label: "tests au vert", detail: "87 % de couverture sur backend/app" },
+      { value: "386", label: "tests au vert", detail: "297 côté backend (87 % de couverture) et 89 côté interface" },
       { value: "7", label: "artefacts typés", detail: "chaque relais validé par JSON Schema avant d'être transmis" },
-      { value: "48", label: "runs mesurés", detail: "sur 4 tâches dont les tests d'acceptation sont copiés après coup" },
+      { value: "24", label: "runs comparés", detail: "2 configurations × 4 tâches × 3 répétitions — le minimum pour qu'un écart soit réel" },
     ],
     architecture: {
       title: "Architecture",
@@ -55,9 +55,9 @@ export const crewProject = {
       title: "Défis techniques",
       items: [
         {
-          label: "Une optimisation plausible, livrée éteinte faute de preuve",
+          label: "Une conclusion publiée pendant deux mois, sur une mesure inadmissible",
           detail:
-            "Injecter une carte statique du dépôt dans chaque prompt devait épargner des appels d'exploration. Le total sur les quatre tâches est ressorti moins bon — mais sur un seul run par tâche, et la règle du banc d'essai est qu'un écart n'est réel que si les plages observées ne se recouvrent pas. Sans répétition il n'y a pas de plage, et le comparateur le dit lui-même : « indistinguable ». La conclusion n'est donc pas « la carte coûte plus cher » mais « rien ne montre qu'elle aide » — ce qui suffit à livrer l'option éteinte.",
+            "Injecter une carte statique du dépôt dans chaque prompt devait épargner des appels d'exploration. La mesure disait le contraire, l'option est restée éteinte. Elle reposait sur un run par tâche — or la règle du banc d'essai est qu'un écart n'est réel que si les plages ne se recouvrent pas, et sans répétition il n'y a pas de plage. Le comparateur étiquetait lui-même chaque ligne « unrepeated » ; personne ne l'avait lu. Refaite à trois répétitions, la réponse s'inverse : −10 % de tokens, −11 % d'appels d'outils, une tâche de plus réussie à chaque fois. L'option est désormais activée — et l'exception est écrite avec : sur la tâche à la plus longue conversation, la carte fait passer le budget de 337k à 427k tokens et déborde le plafond.",
         },
         {
           label: "La variance venait de moi, pas du modèle",
@@ -124,9 +124,9 @@ export const crewProject = {
       "llama.cpp", "Qwen3.6-35B-A3B", "Git worktrees",
     ],
     metrics: [
-      { value: "279", label: "passing tests", detail: "87% coverage over backend/app" },
+      { value: "386", label: "passing tests", detail: "297 on the backend (87% coverage) and 89 on the interface" },
       { value: "7", label: "typed artifacts", detail: "every hand-off schema-validated before it is passed on" },
-      { value: "48", label: "measured runs", detail: "across 4 tasks whose acceptance tests are copied in afterwards" },
+      { value: "24", label: "compared runs", detail: "2 configurations × 4 tasks × 3 repetitions — the smallest measurement that can disagree" },
     ],
     architecture: {
       title: "Architecture",
@@ -160,9 +160,9 @@ export const crewProject = {
       title: "Technical challenges",
       items: [
         {
-          label: "A plausible optimisation, shipped switched off for want of evidence",
+          label: "A conclusion published for two months, on evidence that was inadmissible",
           detail:
-            "Injecting a static map of the repository into every prompt was meant to save exploration calls. Summed over the four tasks it came out worse — but on one run per task, and the harness's rule is that a difference is real only when the observed ranges do not overlap. With no repetitions there are no ranges, and the comparator says so itself: indistinguishable. So the finding is not \"the map costs more\" but \"nothing shows it helps\" — which is reason enough to ship it switched off.",
+            "Injecting a static map of the repository into every prompt was meant to save exploration calls. The measurement said otherwise and the option stayed off. It rested on one run per task — and the harness's rule is that a difference is real only when the ranges do not overlap, which with no repetitions do not exist. The comparator was labelling every row `unrepeated` itself; nobody had read it. Redone at three repetitions, the answer reverses: −10% tokens, −11% tool calls, one more task passing every time. It now ships on — and the exception ships with it: on the task with the longest conversation the map takes the budget from 337k to 427k tokens and straight through the ceiling.",
         },
         {
           label: "The variance was mine, not the model's",
