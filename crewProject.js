@@ -1,8 +1,8 @@
 // ─── DONNÉES DU PROJET : Agent Dev Crew (bilingue FR / EN) ──────────────────
 // Passé à <ProjectCard data={...} /> dans App.jsx. Même schéma que l'objet
 // `project` par défaut de ProjectCard.jsx — on ne touche pas au composant.
-// Chiffres MESURÉS le 2026-08-11 : 297 tests backend (87 % de couverture) +
-// 89 tests frontend, 7 artefacts typés, 24 runs comparés sur 4 tâches.
+// Chiffres MESURÉS le 2026-08-12 : 297 tests backend (87 % de couverture) +
+// 89 tests frontend, 7 artefacts typés, 48 runs sur deux mesures répliquées.
 // Captures dans public/screenshots/ (préfixe crew-), prises sur 48 runs réels.
 
 export const crewProject = {
@@ -21,7 +21,7 @@ export const crewProject = {
     metrics: [
       { value: "386", label: "tests au vert", detail: "297 côté backend (87 % de couverture) et 89 côté interface" },
       { value: "7", label: "artefacts typés", detail: "chaque relais validé par JSON Schema avant d'être transmis" },
-      { value: "24", label: "runs comparés", detail: "2 configurations × 4 tâches × 3 répétitions — le minimum pour qu'un écart soit réel" },
+      { value: "48", label: "runs comparés", detail: "deux mesures indépendantes de 2 configurations × 4 tâches × 3 répétitions" },
     ],
     architecture: {
       title: "Architecture",
@@ -57,7 +57,7 @@ export const crewProject = {
         {
           label: "Une conclusion publiée pendant deux mois, sur une mesure inadmissible",
           detail:
-            "Injecter une carte statique du dépôt dans chaque prompt devait épargner des appels d'exploration. La mesure disait le contraire, l'option est restée éteinte. Elle reposait sur un run par tâche — or la règle du banc d'essai est qu'un écart n'est réel que si les plages ne se recouvrent pas, et sans répétition il n'y a pas de plage. Le comparateur étiquetait lui-même chaque ligne « unrepeated » ; personne ne l'avait lu. Refaite à trois répétitions, la réponse s'inverse : −10 % de tokens, −11 % d'appels d'outils, une tâche de plus réussie à chaque fois. L'option est désormais activée — et l'exception est écrite avec : sur la tâche à la plus longue conversation, la carte fait passer le budget de 337k à 427k tokens et déborde le plafond.",
+            "Injecter une carte statique du dépôt dans chaque prompt devait épargner des appels d'exploration. La mesure disait le contraire, l'option est restée éteinte. Elle reposait sur un run par tâche — or la règle du banc d'essai est qu'un écart n'est réel que si les plages ne se recouvrent pas, et sans répétition il n'y a pas de plage. Le comparateur étiquetait lui-même chaque ligne « unrepeated » ; personne ne l'avait lu. Refaite à trois répétitions, puis une seconde fois sur un instrument corrigé, la réponse s'inverse et se réplique : −17 % de tokens, −15 % d'appels d'outils, trois régressions ramenées à zéro. L'option est désormais activée — et l'exception est écrite avec : sur la tâche à la plus longue conversation, la carte fait passer le budget de 315k à 408k tokens et déborde le plafond.",
         },
         {
           label: "La variance venait de moi, pas du modèle",
@@ -126,7 +126,7 @@ export const crewProject = {
     metrics: [
       { value: "386", label: "passing tests", detail: "297 on the backend (87% coverage) and 89 on the interface" },
       { value: "7", label: "typed artifacts", detail: "every hand-off schema-validated before it is passed on" },
-      { value: "24", label: "compared runs", detail: "2 configurations × 4 tasks × 3 repetitions — the smallest measurement that can disagree" },
+      { value: "48", label: "compared runs", detail: "two independent measurements of 2 configurations × 4 tasks × 3 repetitions" },
     ],
     architecture: {
       title: "Architecture",
@@ -162,7 +162,7 @@ export const crewProject = {
         {
           label: "A conclusion published for two months, on evidence that was inadmissible",
           detail:
-            "Injecting a static map of the repository into every prompt was meant to save exploration calls. The measurement said otherwise and the option stayed off. It rested on one run per task — and the harness's rule is that a difference is real only when the ranges do not overlap, which with no repetitions do not exist. The comparator was labelling every row `unrepeated` itself; nobody had read it. Redone at three repetitions, the answer reverses: −10% tokens, −11% tool calls, one more task passing every time. It now ships on — and the exception ships with it: on the task with the longest conversation the map takes the budget from 337k to 427k tokens and straight through the ceiling.",
+            "Injecting a static map of the repository into every prompt was meant to save exploration calls. The measurement said otherwise and the option stayed off. It rested on one run per task — and the harness's rule is that a difference is real only when the ranges do not overlap, which with no repetitions do not exist. The comparator was labelling every row `unrepeated` itself; nobody had read it. Redone at three repetitions, then a second time on a corrected instrument, the answer reverses and replicates: −17% tokens, −15% tool calls, three regressions down to none. It now ships on — and the exception ships with it: on the task with the longest conversation the map takes the budget from 315k to 408k tokens and straight through the ceiling.",
         },
         {
           label: "The variance was mine, not the model's",
