@@ -16,7 +16,7 @@ export const recruitmentProject = {
       "Trier des CV avec un modèle de langage est facile ; obtenir un résultat qu'on puisse défendre l'est beaucoup moins — la note change d'une exécution à l'autre, et rien ne dit d'où elle vient. Ici le score est calculé par un moteur déterministe à partir de poids explicites, le modèle se contente de le commenter, et aucune donnée extraite d'un CV n'est retenue sans une citation retrouvée mot pour mot dans le document. La qualité du classement et l'effet des attributs identitaires sont mesurés sur des jeux annotés puis verrouillés en intégration continue : le tri de candidatures étant un système d'IA à haut risque au sens de l'AI Act, la supervision humaine n'est pas une intention mais un comportement — écarter un candidat demande un motif écrit, un compte non habilité se voit refuser l'action et le refus est journalisé, et chaque dossier porte une échéance de conservation qu'une purge quotidienne fait respecter.",
     stack: ["Python 3.11", "Django 5", "DRF", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "SVG sans dépendance", "GitHub Actions"],
     metrics: [
-      { value: "922", label: "tests automatisés", detail: "87 % de couverture, exécutés en intégration continue" },
+      { value: "949", label: "tests automatisés", detail: "88 % de couverture, exécutés en intégration continue" },
       { value: "0,995", label: "nDCG@5 du classement", detail: "sur 30 cas annotés à la main, 132 candidats, non-régression verrouillée" },
       { value: "1,000", label: "ratio d'impact après atténuation", detail: "0,868 avant — règle dite des quatre cinquièmes" },
     ],
@@ -152,7 +152,7 @@ Classement          Qwen3.6-35B
       "Ranking CVs with a language model is easy; getting a result you can defend is much harder — the score shifts between runs, and nothing says where it came from. Here the score is computed by a deterministic engine from explicit weights, the model only comments on it, and no data extracted from a CV is kept without a quote found verbatim in the document. Ranking quality and the effect of identity attributes are measured on annotated datasets and locked in continuous integration: since CV screening is a high-risk AI system under the EU AI Act, human oversight is a behaviour rather than an intention — rejecting a candidate requires a written reason, an account without the right is refused the action and the refusal is logged, and every file carries a retention deadline that a daily purge enforces.",
     stack: ["Python 3.11", "Django 5", "DRF", "Celery", "PyMuPDF", "python-docx", "pytest", "llama.cpp", "Qwen3.6-35B · Qwen3-VL", "Dependency-free SVG", "GitHub Actions"],
     metrics: [
-      { value: "922", label: "automated tests", detail: "87% coverage, run in continuous integration" },
+      { value: "949", label: "automated tests", detail: "88% coverage, run in continuous integration" },
       { value: "0.995", label: "ranking nDCG@5", detail: "across 30 hand-annotated cases, 132 candidates, regression-locked" },
       { value: "1.000", label: "impact ratio after mitigation", detail: "0.868 before — the four-fifths rule" },
     ],
